@@ -1,8 +1,10 @@
-import { Controller, Get, HttpCode, Post, Param, Body, ParseIntPipe, Put, Delete, ParseUUIDPipe} from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Param, Body, ParseIntPipe, Put, Delete, ParseUUIDPipe, ValidationPipe, UsePipes} from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './Dto/create-car.dto';
+import { UpdateCarDto } from './Dto/update-car.dto';
 
 @Controller('cars')
+@UsePipes(ValidationPipe)
 export class CarsController {
 
     constructor(private readonly carService:CarsService){
@@ -20,10 +22,9 @@ export class CarsController {
         return this.carService.create(car);
     }
 
-    @Put()
-    update(@Param("id", ParseUUIDPipe) id:string, @Body() body:any): any {
-        console.log(body);
-        return {id, body};
+    @Put(":id")
+    update(@Param("id", ParseUUIDPipe) id:string, @Body() car: UpdateCarDto): Car {
+        return this.carService.update(id, car)
     }
 
     @Delete()
